@@ -834,32 +834,21 @@ namespace JayCustomControlLib
         /*
          * TickMark support
          *
-         *   - bool             IsOnlyClickFireEvent
-         *   - bool             ClickUpateValue
+         *   - bool             IsUIFireEventDirectly
          */
         #region Connection support
-        public bool IsOnlyClickFireEvent
+
+
+
+        public bool IsUIFireEventDirectly
         {
-            get { return (bool)GetValue(IsOnlyClickFireEventProperty); }
-            set { SetValue(IsOnlyClickFireEventProperty, value); }
+            get { return (bool)GetValue(IsUIFireEventDirectlyProperty); }
+            set { SetValue(IsUIFireEventDirectlyProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsOnlyClickFireEvent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnlyClickFireEventProperty =
-            DependencyProperty.Register("IsOnlyClickFireEvent", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
-
-
-
-        public bool ClickUpateValue
-        {
-            get { return (bool)GetValue(IsOnlyClickUpateValueProperty); }
-            set { SetValue(IsOnlyClickUpateValueProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsOnlyClickUpateValue.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnlyClickUpateValueProperty =
-            DependencyProperty.Register("ClickUpateValue", typeof(bool), typeof(JSpinner), new PropertyMetadata(true));
-
+        // Using a DependencyProperty as the backing store for IsUIFireEventDirectly.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsUIFireEventDirectlyProperty =
+            DependencyProperty.Register("IsUIFireEventDirectly", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
         #endregion
 
 
@@ -1283,7 +1272,14 @@ namespace JayCustomControlLib
         /// <param name="newValue"></param>
         protected override void OnValueChanged(double oldValue, double newValue)
         {
-            base.OnValueChanged(oldValue, newValue);
+            if (IsUIFireEventDirectly)
+            {
+
+            }
+            else
+            {
+                base.OnValueChanged(oldValue, newValue);
+            }
             UpdateSelectionRangeElementPositionAndSize();
         }
 
@@ -1370,7 +1366,7 @@ namespace JayCustomControlLib
             Double snappedValue = SnapToTick(value);
             if (snappedValue != Value)
             {
-                if (ClickUpateValue)
+                if (!IsUIFireEventDirectly)
                 {
                     this.SetCurrentValue(ValueProperty, Math.Max(this.Minimum, Math.Min(this.Maximum, snappedValue)));
                 }

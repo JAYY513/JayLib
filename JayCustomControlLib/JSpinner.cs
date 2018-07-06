@@ -65,31 +65,22 @@ namespace JayCustomControlLib
         /*
          * TickMark support
          *
-         *   - bool             IsOnlyClickFireEvent
-         *   - bool             ClickUpateValue
+         *   - bool      IsUIFireEventDirectly
          */
 
-        public bool IsOnlyClickFireEvent
+
+
+        public bool IsUIFireEventDirectly
         {
-            get { return (bool)GetValue(IsOnlyClickFireEventProperty); }
-            set { SetValue(IsOnlyClickFireEventProperty, value); }
+            get { return (bool)GetValue(IsUIFireEventDirectlyProperty); }
+            set { SetValue(IsUIFireEventDirectlyProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsOnlyClickFireEvent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnlyClickFireEventProperty =
-            DependencyProperty.Register("IsOnlyClickFireEvent", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
+        // Using a DependencyProperty as the backing store for IsUIFireEventDirectly.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsUIFireEventDirectlyProperty =
+            DependencyProperty.Register("IsUIFireEventDirectly", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
 
 
-
-        public bool ClickUpateValue
-        {
-            get { return (bool)GetValue(IsOnlyClickUpateValueProperty); }
-            set { SetValue(IsOnlyClickUpateValueProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsOnlyClickUpateValue.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnlyClickUpateValueProperty =
-            DependencyProperty.Register("ClickUpateValue", typeof(bool), typeof(JSpinner), new PropertyMetadata(true));
 
         #endregion
 
@@ -143,14 +134,9 @@ namespace JayCustomControlLib
             if (d is JSpinner spinner)
             {
                 int newValue = (int)e.NewValue;
-                if (!spinner.IsOnlyClickFireEvent)
+                if (!spinner.IsUIFireEventDirectly)
                 {
                     spinner.ValueChangedEvent?.Invoke(spinner, newValue);
-                }
-                else if (spinner._ClickFireEvent)
-                {
-                    spinner.ValueChangedEvent?.Invoke(spinner, newValue);
-                    spinner._ClickFireEvent = false;
                 }
                 if (newValue == -1)
                 {
@@ -288,7 +274,7 @@ namespace JayCustomControlLib
             if (sender is JSpinner spinner && spinner.Value <= spinner._TextList.Count - 1 && spinner.Value > 0)
             {
                 _ClickFireEvent = true;
-                if (spinner.ClickUpateValue)
+                if (!spinner.IsUIFireEventDirectly)
                 {
                     spinner.Value--;
                 }
@@ -304,7 +290,7 @@ namespace JayCustomControlLib
             if (sender is JSpinner spinner && spinner.Value < spinner._TextList.Count - 1 && spinner.Value >= 0)
             {
                 _ClickFireEvent = true;
-                if (spinner.ClickUpateValue)
+                if (!spinner.IsUIFireEventDirectly)
                 {
                     spinner.Value++;
                 }

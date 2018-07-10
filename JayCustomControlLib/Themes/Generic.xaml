@@ -10,4 +10,6 @@
         <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JMeter.xaml"></ResourceDictionary>
         <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JSlider.xaml"></ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
+
+
 </ResourceDictionary>

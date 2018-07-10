@@ -46,30 +46,138 @@ namespace JayCustomControlLib
     ///     <MyNamespace:JSpinner/>
     ///
     /// </summary>
+    [TemplatePart(Name = "PART_TextBox", Type = typeof(TextBox))]
     public class JSpinner : Control
     {
+        #region Construction
+        public JSpinner()
+        {
+
+        }
 
         static JSpinner()
         {
+            InitializeCommands();
+
             DefaultStyleKeyProperty.OverrideMetadata(typeof(JSpinner), new FrameworkPropertyMetadata(typeof(JSpinner)));
         }
 
+        #endregion
+        
+        #region Command
+
+        public static RoutedCommand IncreaseCommand { get; private set; } = null;
+        public static RoutedCommand DecreaseCommand { get; private set; } = null;
+        public static RoutedCommand DoubleClickCommand { get; private set; } = null;
+        public static RoutedCommand EndEditingCommand { get; private set; } = null;
+        private static void InitializeCommands()
+        {
+            //create instance
+            IncreaseCommand = new RoutedCommand("IncreaseCommand", typeof(JSpinner));
+            DecreaseCommand = new RoutedCommand("DecreaseCommand", typeof(JSpinner));
+            DoubleClickCommand = new RoutedCommand("DoubleClickCommand", typeof(JSpinner));
+            EndEditingCommand = new RoutedCommand("EndEditingCommand", typeof(JSpinner));
+            //register the command bindings, if the button gets clicked, the method will be called.
+            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(IncreaseCommand, IncreaseExecute, IsDuringEditing));
+            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(DecreaseCommand, DecreaseExecute, IsDuringEditing));
+            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(DoubleClickCommand, DoubleClickExecute));
+            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(EndEditingCommand, EndEditingExecute));
+            //  lastly bind some inputs:  i.e. if the user presses up/down arrow 
+            //  keys, call the appropriate commands.
+            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(IncreaseCommand, new KeyGesture(Key.Right)));
+            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(IncreaseCommand, new KeyGesture(Key.Up)));
+            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(DecreaseCommand, new KeyGesture(Key.Left)));
+            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(DecreaseCommand, new KeyGesture(Key.Down)));
+            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(DoubleClickCommand, new MouseGesture(MouseAction.LeftDoubleClick)));
+            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(EndEditingCommand, new KeyGesture(Key.Enter)));
+        }
+
+        private static void IsDuringEditing(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (sender is JSpinner spinner&&spinner.IsEditing)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
+
+        private static void EndEditingExecute(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is JSpinner spinner)
+            {
+                spinner.IsEditing = false;
+                if (spinner._TextBox != null)
+                {
+                    spinner._TextBox.Focusable = false;
+                    spinner.Value = spinner.CalculateValueFunction(spinner.InputText);
+                }
+            }
+        }
+
+        private static void DoubleClickExecute(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is JSpinner spinner && spinner.CanEdit)
+            {
+                spinner.IsEditing = true;
+                if (spinner._TextBox != null)
+                {
+                    spinner._TextBox.Focusable = true;
+                    spinner._TextBox.Focus();
+                    spinner._TextBox.SelectAll();
+                    spinner._TextBox.Text = spinner.Text;
+                }
+            }
+        }
+
+        private static void DecreaseExecute(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is JSpinner spinner && spinner.Value <= spinner._TextList.Count - 1 && spinner.Value > 0)
+            {
+                spinner._ClickFireEvent = true;
+                if (!spinner.IsUIFireEventDirectly)
+                {
+                    spinner.Value--;
+                }
+                else
+                {
+                    spinner.ValueChangedEvent?.Invoke(spinner, spinner.Value - 1);
+                }
+            }
+        }
+
+        private static void IncreaseExecute(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is JSpinner spinner && spinner.Value < spinner._TextList.Count - 1 && spinner.Value >= 0)
+            {
+                spinner._ClickFireEvent = true;
+                if (!spinner.IsUIFireEventDirectly)
+                {
+                    spinner.Value++;
+                }
+                else
+                {
+                    spinner.ValueChangedEvent?.Invoke(spinner, spinner.Value + 1);
+                }
+            }
+        }
+        #endregion
+        
         #region Event
         public delegate void ValueChangedEventDelegate(JSpinner spinner, int value);
         public event ValueChangedEventDelegate ValueChangedEvent;
         #endregion
 
         #region DependencyPropertys
-
-        #region Connection support
         /*
          * TickMark support
          *
          *   - bool      IsUIFireEventDirectly
          */
-
-
-
+        #region Connection support
+            
         public bool IsUIFireEventDirectly
         {
             get { return (bool)GetValue(IsUIFireEventDirectlyProperty); }
@@ -79,24 +187,65 @@ namespace JayCustomControlLib
         // Using a DependencyProperty as the backing store for IsUIFireEventDirectly.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsUIFireEventDirectlyProperty =
             DependencyProperty.Register("IsUIFireEventDirectly", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
-
-
-
         #endregion
-
-
-
-        public bool IsReadOnly
+        /*
+         * Edit support
+         *
+         *   - bool     CanEdit
+         *   - bool     IsEditing
+         *   - Func<string,int> CalculateValueFunction
+         */
+        #region Edit support
+        public bool CanEdit
         {
-            get { return (bool)GetValue(IsReadOnlyProperty); }
-            set { SetValue(IsReadOnlyProperty, value); }
+            get { return (bool)GetValue(CanEditProperty); }
+            set { SetValue(CanEditProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsReadOnlyProperty =
-            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(JSpinner), new PropertyMetadata(true));
+        // Using a DependencyProperty as the backing store for CanEdit.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CanEditProperty =
+            DependencyProperty.Register("CanEdit", typeof(bool), typeof(JSlider), new PropertyMetadata(false));
 
 
+
+        public bool IsEditing
+        {
+            get { return (bool)GetValue(IsEditingProperty); }
+            set { SetValue(IsEditingProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsEditing.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsEditingProperty =
+            DependencyProperty.Register("IsEditing", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
+
+
+
+
+        public Func<string,int> CalculateValueFunction
+        {
+            get { return (Func<string,int>)GetValue(CalculateValueFunctionProperty); }
+            set { SetValue(CalculateValueFunctionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CalculateValueFunction.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CalculateValueFunctionProperty =
+            DependencyProperty.Register("CalculateValueFunction", typeof(Func<string,int>), typeof(JSpinner), new PropertyMetadata(new Func<string,int>(DefaultCalculateFunction)));
+
+        private static int DefaultCalculateFunction(string arg)
+        {
+            return 0;
+        }
+        #endregion
+
+        /*
+         * Value and text
+         *
+         *   - int     Value
+         *   - IEumerable     ItemSource
+         *   - string       Text
+         *   - string       InputText
+         */
+        #region Value and Text
 
         public int Value
         {
@@ -150,8 +299,6 @@ namespace JayCustomControlLib
             }
         }
 
-
-
         public string Text
         {
             get { return (string)GetValue(TextProperty); }
@@ -161,8 +308,7 @@ namespace JayCustomControlLib
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(JSpinner), new PropertyMetadata(default(string)));
-
-
+        
 
         public IEnumerable ItemsSource
         {
@@ -172,7 +318,7 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for TextCollection.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextCollectionProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(JSpinner), new PropertyMetadata(default(IEnumerable), OnItemsSourceChanged));
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(JSpinner), new PropertyMetadata(null, OnItemsSourceChanged));
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -194,118 +340,26 @@ namespace JayCustomControlLib
         }
 
 
-
-        public ICommand IncreaseCommand
+        public string InputText
         {
-            get { return (ICommand)GetValue(IncreaseCommandProperty); }
-            set { SetValue(IncreaseCommandProperty, value); }
+            get { return (string)GetValue(InputTextProperty); }
+            set { SetValue(InputTextProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IncreaseCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IncreaseCommandProperty =
-            DependencyProperty.Register("IncreaseCommand", typeof(ICommand), typeof(JSpinner), new PropertyMetadata(null));
-
-
-
-        public ICommand DecreaseCommand
-        {
-            get { return (ICommand)GetValue(DecreaseCommandProperty); }
-            set { SetValue(DecreaseCommandProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for DecreaseCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DecreaseCommandProperty =
-            DependencyProperty.Register("DecreaseCommand", typeof(ICommand), typeof(JSpinner), new PropertyMetadata(null));
-
-
-
-        public ICommand DoubleClickCommand
-        {
-            get { return (ICommand)GetValue(DoubleClickCommandProperty); }
-            set { SetValue(DoubleClickCommandProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for DoubleClickCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DoubleClickCommandProperty =
-            DependencyProperty.Register("DoubleClickCommand", typeof(ICommand), typeof(JSpinner), new PropertyMetadata(null));
-
-
-
+        // Using a DependencyProperty as the backing store for InputText.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InputTextProperty =
+            DependencyProperty.Register("InputText", typeof(string), typeof(JSpinner), new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion
-
-        #region Command
         
-        private void InitializeCommands()
-        {
-            //create instance
-            IncreaseCommand = new RoutedCommand("IncreaseCommand", typeof(JSpinner));
-            DecreaseCommand = new RoutedCommand("DecreaseCommand", typeof(JSpinner));
-            DoubleClickCommand = new RoutedCommand("DoubleClickCommand", typeof(JSpinner));
-
-            //register the command bindings, if the button gets clicked, the method will be called.
-            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(IncreaseCommand, IncreaseExecute));
-            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(DecreaseCommand, DecreaseExecute));
-            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(DoubleClickCommand, DoubleClickExecute));
-
-            //  lastly bind some inputs:  i.e. if the user presses up/down arrow 
-            //  keys, call the appropriate commands.
-            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(IncreaseCommand, new KeyGesture(Key.Right)));
-            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(IncreaseCommand, new KeyGesture(Key.Up)));
-            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(DecreaseCommand, new KeyGesture(Key.Left)));
-            CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(DecreaseCommand, new KeyGesture(Key.Down)));
-        }
-        
-        private void DoubleClickExecute(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (sender is JSpinner spinner)
-            {
-                spinner.IsReadOnly = false;
-                if (e.Parameter is TextBox textBox)
-                {
-                    textBox.Focusable = true;
-                    textBox.Focus();
-                    textBox.SelectAll();
-                }
-            }
-        }
-
-        private void DecreaseExecute(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (sender is JSpinner spinner && spinner.Value <= spinner._TextList.Count - 1 && spinner.Value > 0)
-            {
-                _ClickFireEvent = true;
-                if (!spinner.IsUIFireEventDirectly)
-                {
-                    spinner.Value--;
-                }
-                else
-                {
-                    spinner.ValueChangedEvent?.Invoke(spinner, spinner.Value - 1);
-                }
-            }
-        }
-
-        private void IncreaseExecute(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (sender is JSpinner spinner && spinner.Value < spinner._TextList.Count - 1 && spinner.Value >= 0)
-            {
-                _ClickFireEvent = true;
-                if (!spinner.IsUIFireEventDirectly)
-                {
-                    spinner.Value++;
-                }
-                else
-                {
-                    spinner.ValueChangedEvent?.Invoke(spinner, spinner.Value + 1);
-                }
-            }
-        }
         #endregion
 
         #region Private fields
         private IList _TextList = null;
         private bool _ClickFireEvent = false;
+        private TextBox _TextBox = null;
+        private const string TextBoxName = "PART_TextBox";
         #endregion
+
         #region Private methods
         private void GetNewCollection()
         {
@@ -313,12 +367,13 @@ namespace JayCustomControlLib
         }
         #endregion
 
-        #region Construction
-        public JSpinner()
+        #region Override methods
+        public override void OnApplyTemplate()
         {
-            InitializeCommands();
+            base.OnApplyTemplate();
+            _TextBox = GetTemplateChild(TextBoxName) as TextBox;
+            ItemsSource = new int[] { 1, 2, 3, 4, 5 };
         }
         #endregion
-        
     }
 }

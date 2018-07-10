@@ -32,6 +32,12 @@ namespace ControlTest
             //aaa.AxisTexts = strings;
             //bbb.TextCollection = strings;
             aaaa.TickTexts = strings;
+            ttt.CalculateValueFunction = Cal;
+        }
+
+        public int Cal(string ss)
+        {
+            return 2;
         }
     }
 }

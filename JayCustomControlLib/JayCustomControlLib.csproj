@@ -71,17 +71,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\JSwitcher.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveDisplayer.cs" />
     <Compile Include="ActiveDisplayItem.cs" />
     <Compile Include="AttachedPropertys\PanelItemsCollectionProperty.cs" />
     <Compile Include="CommonBasicClass\MyCommandHelper.cs" />
-    <Compile Include="ControlInterfaces\IIsUIFireEventDirectly.cs" />
     <Compile Include="JLimitGDSlider.cs" />
     <Compile Include="JMeter.cs" />
     <Compile Include="JSlider.cs" />
     <Compile Include="JSpinner.cs" />
+    <Compile Include="JSwitcher.cs" />
     <Compile Include="ListDisplayer.cs" />
     <Compile Include="ListDisplayItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -107,6 +111,8 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ControlInterfaces\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

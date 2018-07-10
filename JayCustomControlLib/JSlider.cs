@@ -832,23 +832,20 @@ namespace JayCustomControlLib
         #endregion
 
         /*
-         * TickMark support
+         * Connection support
          *
-         *   - bool             IsUIFireEventDirectly
+         *   - bool             IsUIFireEventDirectlySlider
          */
         #region Connection support
-
-
-
-        public bool IsUIFireEventDirectly
+        public bool IsUIFireEventDirectlySlider
         {
-            get { return (bool)GetValue(IsUIFireEventDirectlyProperty); }
-            set { SetValue(IsUIFireEventDirectlyProperty, value); }
+            get { return (bool)GetValue(IsUIFireEventDirectlySliderProperty); }
+            set { SetValue(IsUIFireEventDirectlySliderProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsUIFireEventDirectly.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsUIFireEventDirectlyProperty =
-            DependencyProperty.Register("IsUIFireEventDirectly", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
+        // Using a DependencyProperty as the backing store for IsUIFireEventDirectlySlider.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsUIFireEventDirectlySliderProperty =
+            DependencyProperty.Register("IsUIFireEventDirectlySlider", typeof(bool), typeof(JSlider),new PropertyMetadata(false));
         #endregion
 
 
@@ -1272,7 +1269,7 @@ namespace JayCustomControlLib
         /// <param name="newValue"></param>
         protected override void OnValueChanged(double oldValue, double newValue)
         {
-            if (IsUIFireEventDirectly)
+            if (IsUIFireEventDirectlySlider)
             {
 
             }
@@ -1366,7 +1363,7 @@ namespace JayCustomControlLib
             Double snappedValue = SnapToTick(value);
             if (snappedValue != Value)
             {
-                if (!IsUIFireEventDirectly)
+                if (!IsUIFireEventDirectlySlider)
                 {
                     this.SetCurrentValue(ValueProperty, Math.Max(this.Minimum, Math.Min(this.Maximum, snappedValue)));
                 }

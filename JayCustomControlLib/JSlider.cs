@@ -834,18 +834,18 @@ namespace JayCustomControlLib
         /*
          * Connection support
          *
-         *   - bool             IsUIFireEventDirectlySlider
+         *   - bool             IsUIFireEventDirectly
          */
         #region Connection support
-        public bool IsUIFireEventDirectlySlider
+        public bool IsUIFireEventDirectly
         {
             get { return (bool)GetValue(IsUIFireEventDirectlySliderProperty); }
             set { SetValue(IsUIFireEventDirectlySliderProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsUIFireEventDirectlySlider.  This enables animation, styling, binding, etc...
+        // Using a DependencyProperty as the backing store for IsUIFireEventDirectly.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsUIFireEventDirectlySliderProperty =
-            DependencyProperty.Register("IsUIFireEventDirectlySlider", typeof(bool), typeof(JSlider),new PropertyMetadata(false));
+            DependencyProperty.Register("IsUIFireEventDirectly", typeof(bool), typeof(JSlider),new PropertyMetadata(false));
         #endregion
 
 
@@ -1269,7 +1269,7 @@ namespace JayCustomControlLib
         /// <param name="newValue"></param>
         protected override void OnValueChanged(double oldValue, double newValue)
         {
-            if (IsUIFireEventDirectlySlider)
+            if (IsUIFireEventDirectly)
             {
 
             }
@@ -1363,7 +1363,7 @@ namespace JayCustomControlLib
             Double snappedValue = SnapToTick(value);
             if (snappedValue != Value)
             {
-                if (!IsUIFireEventDirectlySlider)
+                if (!IsUIFireEventDirectly)
                 {
                     this.SetCurrentValue(ValueProperty, Math.Max(this.Minimum, Math.Min(this.Maximum, snappedValue)));
                 }

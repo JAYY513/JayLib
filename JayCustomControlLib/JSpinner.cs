@@ -64,7 +64,7 @@ namespace JayCustomControlLib
 
         #endregion
         
-        #region Command
+        #region Commands
 
         public static RoutedCommand IncreaseCommand { get; private set; } = null;
         public static RoutedCommand DecreaseCommand { get; private set; } = null;
@@ -94,7 +94,7 @@ namespace JayCustomControlLib
 
         private static void IsDuringEditing(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (sender is JSpinner spinner&&spinner.IsEditing)
+            if (sender is JSpinner spinner&&!spinner.IsEditing)
             {
                 e.CanExecute = true;
             }
@@ -124,10 +124,9 @@ namespace JayCustomControlLib
                 spinner.IsEditing = true;
                 if (spinner._TextBox != null)
                 {
-                    spinner._TextBox.Focusable = true;
+                    spinner._TextBox.Text = spinner.Text;
                     spinner._TextBox.Focus();
                     spinner._TextBox.SelectAll();
-                    spinner._TextBox.Text = spinner.Text;
                 }
             }
         }

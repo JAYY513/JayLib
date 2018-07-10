@@ -29,23 +29,9 @@
         <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
     </UniformGrid>-->
     <UniformGrid>
-        <MyCustomControl:UniformPanel HorizontalAlignment="Left" Orientation="Vertical">
-            <TextBlock>1</TextBlock>
-            <TextBlock>2</TextBlock>
-            <TextBlock>3</TextBlock>
-            <TextBlock>4</TextBlock>
-            <TextBlock>5</TextBlock>
-            <TextBlock>6</TextBlock>
-            <TextBlock>7</TextBlock>
-            <TextBlock>8</TextBlock>
-            <TextBlock>9</TextBlock>
-            <TextBlock>10</TextBlock>
-            <TextBlock>11</TextBlock>
-            <TextBlock>12</TextBlock>
-            <TextBlock>13</TextBlock>
-        </MyCustomControl:UniformPanel>
-        <MyCustomControl:JSlider Foreground="White" ThumbImageHeight="30" ThumbImageWidth="22" IsExteriorEnable="True" ThumbImage="{StaticResource thumd}" Name="aaaa" Background="Black" Orientation="Vertical" Maximum="30" IsSnapToTickEnabled="True" TickPlacement="Both"></MyCustomControl:JSlider>
+        <MyCustomControl:JSwitcher Width="60" Height="20" Content="aaa" MouseDoubleClick="JSwitcher_MouseDoubleClick" MouseLeftButtonDown="JSwitcher_MouseLeftButtonDown"></MyCustomControl:JSwitcher>
+        <MyCustomControl:JSlider IsUIFireEventDirectly="True" Foreground="White" ThumbImageHeight="30" ThumbImageWidth="22" IsExteriorEnable="True" ThumbImage="{StaticResource thumd}" Name="aaaa" Background="Black" Orientation="Vertical" Maximum="30" IsSnapToTickEnabled="True" TickPlacement="Both"></MyCustomControl:JSlider>
         <MyCustomControl:JMeter Value="0" IsDockRight="False" BorderRimBrush="Yellow" ></MyCustomControl:JMeter>
-        <MyCustomControl:JSpinner Name="ttt"></MyCustomControl:JSpinner>
+        <MyCustomControl:JSpinner IsUIFireEventDirectly="True" CanEdit="True" Name="ttt"></MyCustomControl:JSpinner>
     </UniformGrid>
 </Window>

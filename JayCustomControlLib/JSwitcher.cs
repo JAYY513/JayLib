@@ -46,52 +46,113 @@ namespace JayCustomControlLib
     ///     <MyNamespace:JSwitcher/>
     ///
     /// </summary>
+    [TemplatePart(Name = "PART_TextBox", Type = typeof(TextBox))]
     public class JSwitcher : ToggleButton
     {
         static JSwitcher()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(JSwitcher), new FrameworkPropertyMetadata(typeof(JSwitcher)));
         }
+        
         #region Command
         public static RoutedCommand ChangeContentCommand { get; private set; } = null;
+        public static RoutedCommand DoubleClickCommand { get; private set; } = null;
         static void InitializeCommands()
         {
-            ChangeContentCommand = new RoutedCommand("ChangeContentCommand",typeof(JSwitcher));
-            MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), ChangeContentCommand, new ExecutedRoutedEventHandler(ChangeContentExecute), new MouseGesture(MouseAction.LeftDoubleClick));
+            ChangeContentCommand = new RoutedCommand("ChangeContentCommand", typeof(JSwitcher));
+            DoubleClickCommand = new RoutedCommand("DoubleClickCommand", typeof(JSwitcher));
+            MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), ChangeContentCommand, new ExecutedRoutedEventHandler(ChangeContentExecute), new KeyGesture(Key.Enter));
+            MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), DoubleClickCommand, new ExecutedRoutedEventHandler(DoubleClickExecute), new MouseGesture(MouseAction.LeftClick));
+        }
+
+        private static void DoubleClickExecute(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is JSwitcher switcher)
+            {
+                if (switcher._TextBox != null)
+                {
+                    switcher._TextBox.Text = switcher.Content.ToString();
+                    switcher._TextBox.Focus();
+                    switcher._TextBox.SelectAll();
+                }
+            }
         }
 
         private static void ChangeContentExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (sender is JSwitcher switcher && !string.IsNullOrWhiteSpace(switcher.InputText))
+            {
+                switcher.Content = switcher.InputText;
+                switcher.ContentChangedEvent?.Invoke(switcher, switcher.InputText);
+            }
         }
         #endregion
-        #region Propertys and Events
+
+        #region Event
+        public delegate void ContentChangedEventDelegate(object sender, string content);
+        public event ContentChangedEventDelegate ContentChangedEvent;
+        #endregion
+
+        #region Propertys
+
+        #region Edit support
 
 
-        public Brush ActiveBrush
+        public string InputText
         {
-            get { return (Brush)GetValue(ActiveBrushProperty); }
-            set { SetValue(ActiveBrushProperty, value); }
+            get { return (string)GetValue(InputTextProperty); }
+            set { SetValue(InputTextProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for InputText.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InputTextProperty =
+            DependencyProperty.Register("InputText", typeof(string), typeof(JSwitcher), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+
+        public bool IsEditing
+        {
+            get { return (bool)GetValue(IsEditingProperty); }
+            set { SetValue(IsEditingProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsEditing.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsEditingProperty =
+            DependencyProperty.Register("IsEditing", typeof(bool), typeof(JSwitcher), new PropertyMetadata(false));
+
+
+        #endregion
+
+        #region Brushes
+
+        public Brush ActiveBackgroundBrush
+        {
+            get { return (Brush)GetValue(ActiveBackgroundBrushProperty); }
+            set { SetValue(ActiveBackgroundBrushProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ActiveBrush.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ActiveBrushProperty =
-            DependencyProperty.Register("ActiveBrush", typeof(Brush), typeof(JSwitcher), new PropertyMetadata(Brushes.Red));
+        public static readonly DependencyProperty ActiveBackgroundBrushProperty =
+            DependencyProperty.Register("ActiveBackgroundBrush", typeof(Brush), typeof(JSwitcher), new PropertyMetadata(Brushes.Red));
 
 
 
-        public Brush InactiveBrush
+
+
+        public Brush ActiveForegroundBrush
         {
-            get { return (Brush)GetValue(InactiveBrushProperty); }
-            set { SetValue(InactiveBrushProperty, value); }
+            get { return (Brush)GetValue(ActiveForegroundBrushProperty); }
+            set { SetValue(ActiveForegroundBrushProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for InactiveBrush.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty InactiveBrushProperty =
-            DependencyProperty.Register("InactiveBrush", typeof(Brush), typeof(JSwitcher), new PropertyMetadata(Brushes.Red));
+        // Using a DependencyProperty as the backing store for ActiveForegroundBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActiveForegroundBrushProperty =
+            DependencyProperty.Register("ActiveForegroundBrush", typeof(Brush), typeof(JSwitcher), new PropertyMetadata(Brushes.White));
 
 
+        #endregion
 
+        #region Group
         public string GroupName
         {
             get { return (string)GetValue(GroupNameProperty); }
@@ -132,18 +193,32 @@ namespace JayCustomControlLib
                 }
             }
         }
-        
+        #endregion
+
         #endregion
 
         #region Static Propertys
         public static Dictionary<string, List<JSwitcher>> JSwitcherGroup { get; set; } = new Dictionary<string, List<JSwitcher>>();
         #endregion
 
+        #region Private fields
+        private const string _TextBoxName = "PART_TextBox";
+        private TextBox _TextBox = null;
+        #endregion
+
         #region Override methods
         protected override void OnChecked(RoutedEventArgs e)
         {
+            Background = ActiveBackgroundBrush;
+            Foreground = ActiveForegroundBrush;
             UpdateSwitcherGroup();
             base.OnChecked(e);
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            _TextBox = GetTemplateChild(_TextBoxName) as TextBox;
         }
         #endregion
 

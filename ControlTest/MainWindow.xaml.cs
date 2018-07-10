@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,16 @@ namespace ControlTest
         public int Cal(string ss)
         {
             return 2;
+        }
+
+        private void JSwitcher_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("double");
+        }
+
+        private void JSwitcher_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("single");
         }
     }
 }

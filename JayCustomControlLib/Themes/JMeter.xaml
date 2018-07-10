@@ -78,7 +78,7 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Border BorderBrush="Black" BorderThickness="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:ListDisplayer},Path=BorderThickness}" Background="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:ListDisplayer},Path=BorderBrush}"></Border>
+                    <Border BorderBrush="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:ListDisplayer},Path=BorderBrush}" BorderThickness="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:ListDisplayer},Path=BorderThickness}" Background="Transparent"></Border>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -90,7 +90,10 @@
                 <ControlTemplate TargetType="local:JMeter">
                     <DockPanel>
                         <local:ListDisplayer x:Name="TextDisplayer" DockPanel.Dock="Right" Style="{StaticResource d3}" ItemsSource="{TemplateBinding TextCollection}" Background="{TemplateBinding Background}" Height="{TemplateBinding Height}"></local:ListDisplayer>
-                        <local:ListDisplayer BorderThickness="{TemplateBinding Thickness}" Style="{StaticResource d1}" ItemsSource="{TemplateBinding TextCollection}" Background="{TemplateBinding Background}" Height="{TemplateBinding Height}"></local:ListDisplayer>
+                        <Grid Background="{TemplateBinding InactiveBrush}">
+                            <Rectangle Name="PART_ActiveRect" Fill="{TemplateBinding ActiveBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></Rectangle>
+                            <local:ListDisplayer BorderThickness="{TemplateBinding Thickness}" Style="{StaticResource d1}" BorderBrush="{TemplateBinding BorderRimBrush}" ItemsSource="{TemplateBinding TextCollection}" Background="Transparent" Height="{TemplateBinding Height}"></local:ListDisplayer>
+                        </Grid>
                     </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsDockRight" Value="false">

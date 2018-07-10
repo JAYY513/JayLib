@@ -45,5 +45,6 @@
             <TextBlock>13</TextBlock>
         </MyCustomControl:UniformPanel>
         <MyCustomControl:JSlider Foreground="White" ThumbImageHeight="30" ThumbImageWidth="22" IsExteriorEnable="True" ThumbImage="{StaticResource thumd}" Name="aaaa" Background="Black" Orientation="Vertical" Maximum="30" IsSnapToTickEnabled="True" TickPlacement="Both"></MyCustomControl:JSlider>
+        <MyCustomControl:JMeter Value="0" IsDockRight="False" BorderRimBrush="Yellow" ></MyCustomControl:JMeter>
     </UniformGrid>
 </Window>

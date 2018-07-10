@@ -73,6 +73,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveDisplayer.cs" />
     <Compile Include="ActiveDisplayItem.cs" />
     <Compile Include="AttachedPropertys\PanelItemsCollectionProperty.cs" />
     <Compile Include="CommonBasicClass\MyCommandHelper.cs" />

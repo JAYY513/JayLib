@@ -47,6 +47,7 @@ namespace JayCustomControlLib
     ///     <MyNamespace:JMeter/>
     ///
     /// </summary>
+    [TemplatePart(Name = "PART_ActiveRect", Type = typeof(Rectangle))]
     public class JMeter : Control
     {
         static JMeter()
@@ -62,8 +63,20 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for TextCollection.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextCollectionProperty =
-            DependencyProperty.Register("TextCollection", typeof(IEnumerable), typeof(JMeter), new PropertyMetadata(new string[] { "0", "1", "2", "3", "4" }));
+            DependencyProperty.Register("TextCollection", typeof(IEnumerable), typeof(JMeter), new PropertyMetadata(new string[] { "0", "1", "2", "3", "4" }, OnTextCollectionChanged));
 
+        private static void OnTextCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is JMeter meter)
+            {
+                int count = 0;
+                foreach (var value in meter.TextCollection)
+                {
+                    count++;
+                }
+                meter.Maximum = count;
+            }
+        }
 
         public Brush BorderRimBrush
         {
@@ -74,21 +87,7 @@ namespace JayCustomControlLib
         // Using a DependencyProperty as the backing store for BorderRimBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BorderRimBrushProperty =
             DependencyProperty.Register("BorderRimBrush", typeof(Brush), typeof(JMeter), new PropertyMetadata(Brushes.Black));
-
-
-
-
-        public Brush BorderFillBrush
-        {
-            get { return (Brush)GetValue(BorderFillBrushProperty); }
-            set { SetValue(BorderFillBrushProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for BorderFillBrush.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BorderFillBrushProperty =
-            DependencyProperty.Register("BorderFillBrush", typeof(Brush), typeof(JMeter), new PropertyMetadata(Brushes.Gray));
-
-
+        
 
         
         public Thickness Thickness
@@ -125,8 +124,95 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(int), typeof(JMeter), new PropertyMetadata(0));
+            DependencyProperty.Register("Value", typeof(int), typeof(JMeter), new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender, OnValueChanged,CoerceValueChanged));
+
+        private static object CoerceValueChanged(DependencyObject d, object baseValue)
+        {
+            if (d is JMeter meter && baseValue is int value)
+            {
+                if (value > meter.Maximum || value < 0)
+                {
+                    return meter.Value;
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is JMeter meter && e.NewValue is int value)
+            {
+                double percentValue = (double)value / meter.Maximum;
+                double height = meter.ActualHeight;
+                if (meter.ActiveColorRectangle != null )
+                {
+                    meter.ActiveColorRectangle.Height = percentValue * height;
+                }
+            }
+        }
+
+        public int Maximum
+        {
+            get { return (int)GetValue(MaximumProperty); }
+            set { SetValue(MaximumProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Maximum.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MaximumProperty =
+            DependencyProperty.Register("Maximum", typeof(int), typeof(JMeter), new PropertyMetadata(5));
 
 
+
+        public Brush ActiveBrush
+        {
+            get { return (Brush)GetValue(ActiveBrushProperty); }
+            set { SetValue(ActiveBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActiveBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActiveBrushProperty =
+            DependencyProperty.Register("ActiveBrush", typeof(Brush), typeof(JMeter), new FrameworkPropertyMetadata(Brushes.LightGreen, FrameworkPropertyMetadataOptions.AffectsRender));
+
+
+
+        public Brush InactiveBrush
+        {
+            get { return (Brush)GetValue(InactiveBrushProperty); }
+            set { SetValue(InactiveBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for InactiveBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InactiveBrushProperty =
+            DependencyProperty.Register("InactiveBrush", typeof(Brush), typeof(JMeter), new FrameworkPropertyMetadata(Brushes.LightGray, FrameworkPropertyMetadataOptions.AffectsRender));
+
+
+
+        private Rectangle _activeColorRectangle;
+
+        public Rectangle ActiveColorRectangle
+        {
+            get { return _activeColorRectangle; }
+            set { _activeColorRectangle = value; }
+        }
+
+
+        #region Override
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            ActiveColorRectangle = GetTemplateChild(ActiveColorControl) as Rectangle;
+        }
+        #endregion
+
+        #region Private fields
+        private const string ActiveColorControl = "PART_ActiveRect";
+        #endregion
     }
 }

@@ -10,28 +10,14 @@
     <Window.Resources>
         <BitmapImage x:Key="thumd" UriSource="thumb_new.png" />
     </Window.Resources>
-    <!--<UniformGrid Name="uniformgrid">
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-        <MyCustomControl:JSpinner></MyCustomControl:JSpinner>
-    </UniformGrid>-->
-    <UniformGrid>
-        <MyCustomControl:JSwitcher Width="60" Height="20" Content="aaa" MouseDoubleClick="JSwitcher_MouseDoubleClick" MouseLeftButtonDown="JSwitcher_MouseLeftButtonDown"></MyCustomControl:JSwitcher>
-        <MyCustomControl:JSlider IsUIFireEventDirectly="True" Foreground="White" ThumbImageHeight="30" ThumbImageWidth="22" IsExteriorEnable="True" ThumbImage="{StaticResource thumd}" Name="aaaa" Background="Black" Orientation="Vertical" Maximum="30" IsSnapToTickEnabled="True" TickPlacement="Both"></MyCustomControl:JSlider>
-        <MyCustomControl:JMeter Value="0" IsDockRight="False" BorderRimBrush="Yellow" ></MyCustomControl:JMeter>
-        <MyCustomControl:JSpinner IsUIFireEventDirectly="True" CanEdit="True" Name="ttt"></MyCustomControl:JSpinner>
-    </UniformGrid>
+    <MyCustomControl:DrawerHost  Background="White">
+        <UniformGrid>
+            <MyCustomControl:JSwitcher Width="60" Height="20" Content="aaa" MouseDoubleClick="JSwitcher_MouseDoubleClick" MouseLeftButtonDown="JSwitcher_MouseLeftButtonDown"></MyCustomControl:JSwitcher>
+            <MyCustomControl:JSlider IsUIFireEventDirectly="False" Foreground="White" ThumbImageHeight="30" ThumbImageWidth="22" IsExteriorEnable="True" ThumbImage="{StaticResource thumd}" Name="aaaa" Background="Black" Orientation="Vertical" Maximum="81" IsSnapToTickEnabled="True" TickPlacement="Both"></MyCustomControl:JSlider>
+            <MyCustomControl:JMeter Value="0" IsDockRight="False" BorderRimBrush="Yellow" ></MyCustomControl:JMeter>
+            <MyCustomControl:JSpinner IsUIFireEventDirectly="True" CanEdit="True" Name="ttt"></MyCustomControl:JSpinner>
+        </UniformGrid>
+
+    </MyCustomControl:DrawerHost>
+
 </Window>

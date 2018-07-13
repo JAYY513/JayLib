@@ -51,6 +51,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Themes\DrawerHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -75,12 +79,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Shadow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveDisplayer.cs" />
     <Compile Include="ActiveDisplayItem.cs" />
     <Compile Include="AttachedPropertys\PanelItemsCollectionProperty.cs" />
+    <Compile Include="AttachedPropertys\ShadowAssist.cs" />
+    <Compile Include="Blank.cs" />
     <Compile Include="CommonBasicClass\MyCommandHelper.cs" />
+    <Compile Include="Converter\DrawerOffsetConverter.cs" />
+    <Compile Include="Converter\ShadowConverter.cs" />
+    <Compile Include="DrawerHost.cs" />
     <Compile Include="JLimitGDSlider.cs" />
     <Compile Include="JMeter.cs" />
     <Compile Include="JSlider.cs" />

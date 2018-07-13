@@ -25,6 +25,17 @@ namespace JayLib.JayString
             return new StringBuilder(_input).Append(str).ToString();
         }
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_input"></param>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string PreAppend(this string _input, string str)
+        {
+            _input = new StringBuilder(str).Append(_input).ToString();
+            return _input;
+        }
+        /// <summary>
         /// Appends the char ch onto the end of this string.
         /// </summary>
         /// <param name="_input"></param>

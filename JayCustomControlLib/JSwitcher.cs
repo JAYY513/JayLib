@@ -49,11 +49,20 @@ namespace JayCustomControlLib
     [TemplatePart(Name = "PART_TextBox", Type = typeof(TextBox))]
     public class JSwitcher : ToggleButton
     {
+        #region Construction
+        public JSwitcher()
+        {
+            Background = InactiveBackgroundBrush;
+            Foreground = InactiveForegroundBrush;
+        }
         static JSwitcher()
         {
+            InitializeCommands();
             DefaultStyleKeyProperty.OverrideMetadata(typeof(JSwitcher), new FrameworkPropertyMetadata(typeof(JSwitcher)));
         }
-        
+        #endregion
+
+
         #region Command
         public static RoutedCommand ChangeContentCommand { get; private set; } = null;
         public static RoutedCommand DoubleClickCommand { get; private set; } = null;
@@ -62,13 +71,14 @@ namespace JayCustomControlLib
             ChangeContentCommand = new RoutedCommand("ChangeContentCommand", typeof(JSwitcher));
             DoubleClickCommand = new RoutedCommand("DoubleClickCommand", typeof(JSwitcher));
             MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), ChangeContentCommand, new ExecutedRoutedEventHandler(ChangeContentExecute), new KeyGesture(Key.Enter));
-            MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), DoubleClickCommand, new ExecutedRoutedEventHandler(DoubleClickExecute), new MouseGesture(MouseAction.LeftClick));
+            MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), DoubleClickCommand, new ExecutedRoutedEventHandler(DoubleClickExecute), new MouseGesture(MouseAction.LeftDoubleClick));
         }
 
         private static void DoubleClickExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            if (sender is JSwitcher switcher)
+            if (sender is JSwitcher switcher&&switcher.CanEdit)
             {
+                switcher.IsEditing = true;
                 if (switcher._TextBox != null)
                 {
                     switcher._TextBox.Text = switcher.Content.ToString();
@@ -80,10 +90,14 @@ namespace JayCustomControlLib
 
         private static void ChangeContentExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            if (sender is JSwitcher switcher && !string.IsNullOrWhiteSpace(switcher.InputText))
+            if (sender is JSwitcher switcher )
             {
-                switcher.Content = switcher.InputText;
-                switcher.ContentChangedEvent?.Invoke(switcher, switcher.InputText);
+                if (!string.IsNullOrWhiteSpace(switcher.InputText))
+                {
+                    switcher.Content = switcher.InputText;
+                    switcher.ContentChangedEvent?.Invoke(switcher, switcher.InputText);
+                }
+                switcher.IsEditing = false;
             }
         }
         #endregion
@@ -96,6 +110,19 @@ namespace JayCustomControlLib
         #region Propertys
 
         #region Edit support
+
+
+
+        public bool CanEdit
+        {
+            get { return (bool)GetValue(CanEditProperty); }
+            set { SetValue(CanEditProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CanEdit.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CanEditProperty =
+            DependencyProperty.Register("CanEdit", typeof(bool), typeof(JSwitcher), new PropertyMetadata(false));
+
 
 
         public string InputText
@@ -118,7 +145,7 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for IsEditing.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsEditingProperty =
-            DependencyProperty.Register("IsEditing", typeof(bool), typeof(JSwitcher), new PropertyMetadata(false));
+            DependencyProperty.Register("IsEditing", typeof(bool), typeof(JSwitcher), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
 
 
         #endregion
@@ -148,6 +175,30 @@ namespace JayCustomControlLib
         // Using a DependencyProperty as the backing store for ActiveForegroundBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ActiveForegroundBrushProperty =
             DependencyProperty.Register("ActiveForegroundBrush", typeof(Brush), typeof(JSwitcher), new PropertyMetadata(Brushes.White));
+
+
+
+        public Brush InactiveBackgroundBrush
+        {
+            get { return (Brush)GetValue(InactiveBackgroundBrushProperty); }
+            set { SetValue(InactiveBackgroundBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for InactiveBackgroundBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InactiveBackgroundBrushProperty =
+            DependencyProperty.Register("InactiveBackgroundBrush", typeof(Brush), typeof(JSwitcher), new PropertyMetadata(Brushes.Gray));
+
+
+
+        public Brush InactiveForegroundBrush
+        {
+            get { return (Brush)GetValue(InactiveForegroundBrushProperty); }
+            set { SetValue(InactiveForegroundBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for InactiveForegroundBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InactiveForegroundBrushProperty =
+            DependencyProperty.Register("InactiveForegroundBrush", typeof(Brush), typeof(JSwitcher), new PropertyMetadata(Brushes.Black));
 
 
         #endregion
@@ -213,6 +264,13 @@ namespace JayCustomControlLib
             Foreground = ActiveForegroundBrush;
             UpdateSwitcherGroup();
             base.OnChecked(e);
+        }
+
+        protected override void OnUnchecked(RoutedEventArgs e)
+        {
+            Background = InactiveBackgroundBrush;
+            Foreground = InactiveForegroundBrush;
+            base.OnUnchecked(e);
         }
 
         public override void OnApplyTemplate()

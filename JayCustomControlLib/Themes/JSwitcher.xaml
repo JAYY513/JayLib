@@ -5,7 +5,7 @@
                     xmlns:MyAttachedPropeerty="clr-namespace:JayCustomControlLib.AttachedPropertys"
                     xmlns:local="clr-namespace:JayCustomControlLib">
     <Style TargetType="{x:Type local:JSwitcher}">
-        <Setter Property="Foreground" Value="Black"></Setter>
+        <Setter Property="Foreground" Value="{Binding }"></Setter>
         <Setter Property="Background" Value="Gray"></Setter>
         <Setter Property="Template">
             <Setter.Value>
@@ -14,7 +14,7 @@
                         <Border Name="BD" Background="{TemplateBinding Background}"  CornerRadius="3" ClipToBounds="True">
                             <Grid>
                                 <ContentControl HorizontalAlignment="Center" Margin="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="{TemplateBinding Content}"></ContentControl>
-                                <TextBox Name="PART_TextBox" Text="{TemplateBinding InputText}" Background="{TemplateBinding Background}" BorderThickness="0" Margin="1" Visibility="Collapsed" TextAlignment="Center"></TextBox>
+                                <TextBox Name="PART_TextBox" Foreground="{TemplateBinding Foreground}" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:JSwitcher},Path= InputText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Background="{TemplateBinding Background}" BorderThickness="0" Margin="1" Visibility="Collapsed" TextAlignment="Center"></TextBox>
                             </Grid>
                         </Border>
                     </Grid>

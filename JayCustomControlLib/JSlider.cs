@@ -62,6 +62,7 @@ namespace JayCustomControlLib
     [DefaultEvent("ValueChanged"), DefaultProperty("Value")]
     [TemplatePart(Name = "PART_Track", Type = typeof(Track))]
     [TemplatePart(Name = "PART_SelectionRange", Type = typeof(FrameworkElement))]
+    [TemplatePart(Name = "PART_TrackBackground",Type =typeof(Border))]
     public class JSlider : RangeBase
     {
         #region Constructors
@@ -101,6 +102,7 @@ namespace JayCustomControlLib
         }
 
         #endregion Constructors
+
         #region Commands
 
         /// <summary>
@@ -271,7 +273,7 @@ namespace JayCustomControlLib
         /// </summary>
         public static readonly DependencyProperty OrientationProperty =
                 DependencyProperty.Register("Orientation", typeof(Orientation), typeof(JSlider),
-                                          new FrameworkPropertyMetadata(Orientation.Horizontal));
+                                          new FrameworkPropertyMetadata(Orientation.Horizontal,FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>
         /// Get/Set Orientation property
@@ -440,6 +442,7 @@ namespace JayCustomControlLib
          *   - bool             IsSnapToTickEnabled
          *   - Enum             TickPlacement
          *   - IEumerable<string> TickTexts
+         *   - doubleCollection   Ticks
          */
         #region TickMark support
         /// <summary>
@@ -538,10 +541,9 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for TickTexts.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TickTextsProperty =
-            DependencyProperty.Register("TickTexts", typeof(IEnumerable<string>), typeof(JSlider), new PropertyMetadata(default(IEnumerable<string>)));
+            DependencyProperty.Register("TickTexts", typeof(IEnumerable<string>), typeof(JSlider), new FrameworkPropertyMetadata(default(IEnumerable<string>),FrameworkPropertyMetadataOptions.Inherits));
 
-
-        // 
+        
 
         #endregion TickMark support
 
@@ -797,10 +799,7 @@ namespace JayCustomControlLib
         public static readonly DependencyProperty ThumbImageProperty =
             DependencyProperty.Register("ThumbImage", typeof(ImageSource), typeof(JSlider), new PropertyMetadata(null));
 
-
-
-
-
+        
 
         public double ThumbImageWidth
         {
@@ -810,11 +809,7 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for ThumbImageWidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ThumbImageWidthProperty =
-            DependencyProperty.Register("ThumbImageWidth", typeof(double), typeof(JSlider), new PropertyMetadata(10d));
-
-
-
-
+            DependencyProperty.Register("ThumbImageWidth", typeof(double), typeof(JSlider), new FrameworkPropertyMetadata(11d,FrameworkPropertyMetadataOptions.AffectsRender,new PropertyChangedCallback(OnThumbImageSizeChanged)));
 
 
         public double ThumbImageHeight
@@ -825,47 +820,38 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for ThumbImageHeight.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ThumbImageHeightProperty =
-            DependencyProperty.Register("ThumbImageHeight", typeof(double), typeof(JSlider), new PropertyMetadata(10d));
+            DependencyProperty.Register("ThumbImageHeight", typeof(double), typeof(JSlider), new FrameworkPropertyMetadata(22d,FrameworkPropertyMetadataOptions.AffectsRender,new PropertyChangedCallback(OnThumbImageSizeChanged)));
 
-
+        private static void OnThumbImageSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is JSlider slider)
+            {
+                slider.RefreshTrackBackground();
+            }
+        }
 
         #endregion
 
         /*
-         * TickMark support
+         * Connection support
          *
-         *   - bool             IsOnlyClickFireEvent
-         *   - bool             ClickUpateValue
+         *   - bool             IsUIFireEventDirectly
          */
         #region Connection support
-        public bool IsOnlyClickFireEvent
+        public bool IsUIFireEventDirectly
         {
-            get { return (bool)GetValue(IsOnlyClickFireEventProperty); }
-            set { SetValue(IsOnlyClickFireEventProperty, value); }
+            get { return (bool)GetValue(IsUIFireEventDirectlySliderProperty); }
+            set { SetValue(IsUIFireEventDirectlySliderProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsOnlyClickFireEvent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnlyClickFireEventProperty =
-            DependencyProperty.Register("IsOnlyClickFireEvent", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
-
-
-
-        public bool ClickUpateValue
-        {
-            get { return (bool)GetValue(IsOnlyClickUpateValueProperty); }
-            set { SetValue(IsOnlyClickUpateValueProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsOnlyClickUpateValue.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnlyClickUpateValueProperty =
-            DependencyProperty.Register("ClickUpateValue", typeof(bool), typeof(JSpinner), new PropertyMetadata(true));
-
+        // Using a DependencyProperty as the backing store for IsUIFireEventDirectly.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsUIFireEventDirectlySliderProperty =
+            DependencyProperty.Register("IsUIFireEventDirectly", typeof(bool), typeof(JSlider),new PropertyMetadata(false));
         #endregion
 
 
         #endregion // Properties
-
-
+        
         #region Event Handlers
         /// <summary>
         /// Listen to Thumb DragStarted event.
@@ -1162,6 +1148,12 @@ namespace JayCustomControlLib
             }
         }
 
+        internal Border TrackBackground
+        {
+            get { return _trackBackground; }
+            set { _trackBackground = value; }
+        }
+
         /// <summary>
         /// Snap the input 'value' to the closest tick.
         /// If input value is exactly in the middle of 2 surrounding ticks, it will be snapped to the tick that has greater value.
@@ -1238,6 +1230,26 @@ namespace JayCustomControlLib
         }
         #endregion Event Handlers
 
+        #region Private Functions
+        private void RefreshTrackBackground()
+        {
+            if (Orientation == Orientation.Horizontal)
+            {
+                if (TrackBackground != null)
+                {
+                    TrackBackground.Margin = new Thickness(ThumbImageWidth / 2, 0d, ThumbImageWidth / 2, 0d);
+                }
+            }
+            else
+            {
+                if (TrackBackground != null)
+                {
+                    TrackBackground.Margin = new Thickness(0d, ThumbImageHeight / 2, 0d, ThumbImageHeight / 2);
+                }
+            }
+        }
+        #endregion
+
         #region Override Functions
 
 
@@ -1283,7 +1295,14 @@ namespace JayCustomControlLib
         /// <param name="newValue"></param>
         protected override void OnValueChanged(double oldValue, double newValue)
         {
-            base.OnValueChanged(oldValue, newValue);
+            if (IsUIFireEventDirectly)
+            {
+
+            }
+            else
+            {
+                base.OnValueChanged(oldValue, newValue);
+            }
             UpdateSelectionRangeElementPositionAndSize();
         }
 
@@ -1296,13 +1315,13 @@ namespace JayCustomControlLib
 
             SelectionRangeElement = GetTemplateChild(SelectionRangeElementName) as FrameworkElement;
             Track = GetTemplateChild(TrackName) as Track;
-
+            TrackBackground = GetTemplateChild(TrackBackgroundName) as Border;
             if (_autoToolTip != null)
             {
                 _autoToolTip.PlacementTarget = Track != null ? Track.Thumb : null;
             }
+            RefreshTrackBackground();
         }
-
         
 
         #endregion Override Functions
@@ -1370,7 +1389,7 @@ namespace JayCustomControlLib
             Double snappedValue = SnapToTick(value);
             if (snappedValue != Value)
             {
-                if (ClickUpateValue)
+                if (!IsUIFireEventDirectly)
                 {
                     this.SetCurrentValue(ValueProperty, Math.Max(this.Minimum, Math.Min(this.Maximum, snappedValue)));
                 }
@@ -1396,14 +1415,14 @@ namespace JayCustomControlLib
 
 
         #endregion Helper Functions
-
-
+        
         #region Private Fields
 
         private const string TrackName = "PART_Track";
         private const string SelectionRangeElementName = "PART_SelectionRange";
-
+        private const string TrackBackgroundName = "PART_TrackBackground";
         // JSlider required parts
+        private Border _trackBackground;
         private FrameworkElement _selectionRangeElement;
         private Track _track;
         private System.Windows.Controls.ToolTip _autoToolTip = null;
@@ -1411,6 +1430,5 @@ namespace JayCustomControlLib
         //
         private double _OldSnappedValue = 0d;
         #endregion Private Fields
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,10 +21,34 @@ namespace ControlTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static string[] FaderTickStrings { get; private set; } = new string[]
+{
+            "OFF",  //0
+            "-70",//1
+            "","","","","","","","","","",
+            "-25",//12
+            "","","","","","","","",
+            "-18",//21
+            "","","","","","","","","",
+            "-13",//31
+            "","","","","","","","",
+            "-9",//40
+            "","","","","","","","","",
+            "-6",//50
+            "","","","","","","","","",
+            "0",//60
+            "","","","","","","","","","",
+            "+6",//71
+            "","","","","","","","",
+            "+10",//80
+};
+
         public MainWindow()
         {
             InitializeComponent();
 
         }
+
+
     }
 }

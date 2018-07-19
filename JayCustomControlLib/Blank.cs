@@ -41,36 +41,14 @@ namespace JayCustomControlLib
     /// 步驟 2)
     /// 開始使用 XAML 檔案中的控制項。
     ///
-    ///     <MyNamespace:ListDisplayer/>
+    ///     <MyNamespace:Blank/>
     ///
     /// </summary>
-    [StyleTypedProperty(Property = "ItemContainerStyle", StyleTargetType = typeof(ListDisplayItem))]
-    public class ListDisplayer : ItemsControl
+    public class Blank : Control
     {
-        static ListDisplayer()
+        static Blank()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(ListDisplayer), new FrameworkPropertyMetadata(typeof(ListDisplayer)));
-            ItemsPanelTemplate itemsPanelTemplate = new ItemsPanelTemplate(new FrameworkElementFactory(typeof(VirtualizingStackPanel)));
-            itemsPanelTemplate.Seal();
-            ItemsPanelProperty.OverrideMetadata(typeof(ListDisplayer), new FrameworkPropertyMetadata(itemsPanelTemplate));
-        }
-
-        /// <summary>
-        /// Return true if the item is (or is eligible to be) its own ItemContainer
-        /// </summary>
-        protected override bool IsItemItsOwnContainerOverride(object item)
-        {
-            return (item is ListDisplayItem);
-        }
-
-        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
-        {
-            base.PrepareContainerForItemOverride(element, item);
-        }
-
-        protected override DependencyObject GetContainerForItemOverride()
-        {
-            return new ListDisplayItem();
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(Blank), new FrameworkPropertyMetadata(typeof(Blank)));
         }
     }
 }

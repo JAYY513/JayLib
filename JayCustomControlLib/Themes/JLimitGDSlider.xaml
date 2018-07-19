@@ -3,6 +3,7 @@
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:MyAttachedPropeerty="clr-namespace:JayCustomControlLib.AttachedPropertys"
+                    xmlns:MyPanel="clr-namespace:JayCustomControlLib.Panels"
                     xmlns:local="clr-namespace:JayCustomControlLib">
     <Style TargetType="local:ListDisplayer" x:Key="d1">
         <Setter Property="ItemsPanel">
@@ -34,7 +35,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="1"></UniformGrid>
+                    <MyPanel:ReversedUniformGrid Columns="1" IsReversed="True"></MyPanel:ReversedUniformGrid>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
@@ -131,7 +132,7 @@
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="{TemplateBinding OriginalText}"></TextBlock>
                         <local:ListDisplayer x:Name="HA" Style="{StaticResource d1}" FontSize="{TemplateBinding FontSize}" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CoordinateTexts}" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="1"></local:ListDisplayer>
                         <local:ListDisplayer x:Name="VA" Style="{StaticResource d2}" FontSize="{TemplateBinding FontSize}" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CoordinateTexts}" VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0"></local:ListDisplayer>
-                        <Border Background="Transparent" Height="{Binding ElementName=HA,Path=ActualHeight}" Grid.Row="0" Grid.Column="1" Visibility="Visible"></Border>
+                        <Border Background="Transparent" Height="{Binding ElementName=HA,Path=ActualHeight}" Grid.Row="0" Grid.Column="1" Visibility="Collapsed"></Border>
                         <Border Background="Transparent" Width="{Binding ElementName=VA,Path=ActualWidth}" Grid.Row="1" Grid.Column="2" Visibility="Visible"></Border>
                         <Viewbox Grid.Row="1" Grid.Column="1" Stretch="Fill" Height="{Binding RelativeSource={RelativeSource Mode=Self},Path=Width}">
                             <Grid Background="{TemplateBinding CanvasBrush}">

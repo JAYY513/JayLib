@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -42,16 +41,15 @@ namespace JayCustomControlLib
     /// 步驟 2)
     /// 開始使用 XAML 檔案中的控制項。
     ///
-    ///     <MyNamespace:ActiveDisplayItem/>
+    ///     <MyNamespace:ActiveDisplayer/>
     ///
     /// </summary>
-    public class ActiveDisplayItem : ContentControl
+    public class ActiveDisplayer : ItemsControl
     {
-        static ActiveDisplayItem()
+        static ActiveDisplayer()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(ActiveDisplayItem), new FrameworkPropertyMetadata(typeof(ActiveDisplayItem)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ActiveDisplayer), new FrameworkPropertyMetadata(typeof(ActiveDisplayer)));
         }
-
 
 
 
@@ -63,7 +61,7 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for ActiveBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ActiveBrushProperty =
-            ActiveDisplayer.ActiveBrushProperty.AddOwner(typeof(ActiveDisplayItem), new FrameworkPropertyMetadata(FrameworkPropertyMetadataOptions.Inherits));
+            DependencyProperty.Register("ActiveBrush", typeof(Brush), typeof(ActiveDisplayer), new FrameworkPropertyMetadata(Brushes.LightGreen, FrameworkPropertyMetadataOptions.Inherits));
 
 
 
@@ -75,7 +73,23 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for InactiveBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InactiveBrushProperty =
-            ActiveDisplayer.InactiveBrushProperty.AddOwner(typeof(ActiveDisplayItem), new FrameworkPropertyMetadata(FrameworkPropertyMetadataOptions.Inherits));
+            DependencyProperty.Register("InactiveBrush", typeof(Brush), typeof(ActiveDisplayer), new FrameworkPropertyMetadata(Brushes.LightGray, FrameworkPropertyMetadataOptions.Inherits));
+
+
+
+        public static bool GetIsActive(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsActiveProperty);
+        }
+
+        public static void SetIsActive(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsActiveProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for IsActive.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsActiveProperty =
+            DependencyProperty.RegisterAttached("IsActive", typeof(bool), typeof(ActiveDisplayer), new FrameworkPropertyMetadata(false));
 
 
     }

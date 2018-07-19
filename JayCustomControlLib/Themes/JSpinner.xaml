@@ -6,41 +6,45 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:JSpinner}">
-                    <DockPanel>
-                        <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Right">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="2*" MinWidth="20"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
                             <UniformGrid Columns="1" DockPanel.Dock="Right">
-                                <RepeatButton Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IncreaseCommand}">
+                                <RepeatButton Command="{x:Static local:JSpinner.IncreaseCommand}">
                                     <RepeatButton.Content>
                                         <Viewbox>
-                                            <Canvas Width="200" Height="100">
-                                                <Path Data="M50,0 L100,50 75,50 50,25 25,50 0,50 z" Fill="Black" Height="50" Canvas.Left="50" Canvas.Top="25"/>
+                                            <Canvas Width="100" Height="50">
+                                                <Path Data="M50,0 L100,50 75,50 50,25 25,50 0,50 z" Fill="Black" Height="50" Canvas.Left="0" Canvas.Top="0"/>
                                             </Canvas>
                                         </Viewbox>
                                     </RepeatButton.Content>
                                 </RepeatButton>
-                                <RepeatButton Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=DecreaseCommand}">
+                                <RepeatButton Command="{x:Static local:JSpinner.DecreaseCommand}">
                                     <RepeatButton.Content>
                                         <Viewbox>
-                                            <Canvas Width="200" Height="100">
-                                                <Path Data="M0,0 L25,0 50,25 75,0 100,0 50,50 z" Fill="Black" Height="50" Canvas.Left="50" Canvas.Top="25"/>
+                                            <Canvas Width="100" Height="50">
+                                                <Path Data="M0,0 L25,0 50,25 75,0 100,0 50,50 z" Fill="Black" Height="50" Canvas.Left="0" Canvas.Top="0"/>
                                             </Canvas>
                                         </Viewbox>
                                     </RepeatButton.Content>
                                 </RepeatButton>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="Black" BorderThickness="1">
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
                             <Grid>
-                                <TextBox Name="TB" Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Text}" IsReadOnly="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsReadOnly}" Margin="1" >
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="MouseDoubleClick">
-                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=DoubleClickCommand}" CommandParameter="{Binding ElementName=TB}"></i:InvokeCommandAction>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </TextBox>
+                                <TextBlock Text="{TemplateBinding Text}" Margin="1"></TextBlock>
+                                <TextBox Name="PART_TextBox" Text="{Binding RelativeSource={RelativeSource AncestorType=local:JSpinner},Path= InputText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="1" IsHitTestVisible="False" Visibility="Collapsed"></TextBox>
                             </Grid>
                         </Border>
-                    </DockPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEditing" Value="true">
+                            <Setter TargetName="PART_TextBox" Property="Visibility" Value="Visible"></Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

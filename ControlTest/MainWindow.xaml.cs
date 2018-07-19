@@ -23,15 +23,7 @@ namespace ControlTest
         public MainWindow()
         {
             InitializeComponent();
-            List<string> strings = new List<string>();
-            for (int i = 0; i < 4; i++)
-            {
-                strings.Add((i*10).ToString());
-            }
-            int a = 0;
-            //aaa.AxisTexts = strings;
-            //bbb.TextCollection = strings;
-            aaaa.TickTexts = strings;
+
         }
     }
 }

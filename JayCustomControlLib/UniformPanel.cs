@@ -46,6 +46,8 @@ namespace JayCustomControlLib
     /// </summary>
     public class UniformPanel : Panel
     {
+        #region Propertys
+
         public Orientation Orientation
         {
             get { return (Orientation)GetValue(OrientationProperty); }
@@ -64,15 +66,15 @@ namespace JayCustomControlLib
             }
         }
 
-        public bool IsResersed
+        public bool IsReversed
         {
-            get { return (bool)GetValue(IsResersedProperty); }
-            set { SetValue(IsResersedProperty, value); }
+            get { return (bool)GetValue(IsReversedProperty); }
+            set { SetValue(IsReversedProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for IsResersed.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsResersedProperty =
-            DependencyProperty.Register("IsResersed", typeof(bool), typeof(UniformPanel), new PropertyMetadata(false, OnIsResersedChanged));
+        public static readonly DependencyProperty IsReversedProperty =
+            DependencyProperty.Register("IsReversed", typeof(bool), typeof(UniformPanel), new PropertyMetadata(false, OnIsResersedChanged));
 
         private static void OnIsResersedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -82,10 +84,17 @@ namespace JayCustomControlLib
             }
         }
 
+        #endregion Propertys
+
+        #region Private methods
         private void ResetUniformPanel()
         {
             this.InvalidateMeasure();
         }
+
+        #endregion Private methods
+
+        #region Override methods
 
         /// <summary>
         /// Arrange children position after measure children size.
@@ -112,7 +121,7 @@ namespace JayCustomControlLib
             {
                 return finalSize;
             }
-            if (IsResersed)
+            if (IsReversed)
             {
                 elements.Reverse();
             }
@@ -187,7 +196,7 @@ namespace JayCustomControlLib
             {
                 return new Size(0, 0);
             }
-            if (IsResersed)
+            if (IsReversed)
             {
                 elements.Reverse();
             }
@@ -242,5 +251,7 @@ namespace JayCustomControlLib
             }
             return finalSize;
         }
+
+        #endregion Override methods
     }
 }

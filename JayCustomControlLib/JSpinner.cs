@@ -78,8 +78,8 @@ namespace JayCustomControlLib
             DoubleClickCommand = new RoutedCommand("DoubleClickCommand", typeof(JSpinner));
             EndEditingCommand = new RoutedCommand("EndEditingCommand", typeof(JSpinner));
             //register the command bindings, if the button gets clicked, the method will be called.
-            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(IncreaseCommand, IncreaseExecute, IsDuringEditing));
-            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(DecreaseCommand, DecreaseExecute, IsDuringEditing));
+            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(IncreaseCommand, IncreaseExecute, CanIncrease));
+            CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(DecreaseCommand, DecreaseExecute, CanDecrease));
             CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(DoubleClickCommand, DoubleClickExecute));
             CommandManager.RegisterClassCommandBinding(typeof(JSpinner), new CommandBinding(EndEditingCommand, EndEditingExecute));
             //  lastly bind some inputs:  i.e. if the user presses up/down arrow 
@@ -92,9 +92,21 @@ namespace JayCustomControlLib
             CommandManager.RegisterClassInputBinding(typeof(JSpinner), new InputBinding(EndEditingCommand, new KeyGesture(Key.Enter)));
         }
 
-        private static void IsDuringEditing(object sender, CanExecuteRoutedEventArgs e)
+        private static void CanIncrease(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (sender is JSpinner spinner&&!spinner.IsEditing)
+            if (sender is JSpinner spinner && !spinner.IsEditing && spinner._TextList != null && spinner.Value < spinner._TextList.Count-1)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
+
+        private static void CanDecrease(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (sender is JSpinner spinner && !spinner.IsEditing && spinner._TextList != null && spinner.Value > 0)
             {
                 e.CanExecute = true;
             }
@@ -218,8 +230,7 @@ namespace JayCustomControlLib
             DependencyProperty.Register("IsEditing", typeof(bool), typeof(JSpinner), new PropertyMetadata(false));
 
 
-
-
+        
         public Func<string,int> CalculateValueFunction
         {
             get { return (Func<string,int>)GetValue(CalculateValueFunctionProperty); }
@@ -254,7 +265,7 @@ namespace JayCustomControlLib
 
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(int), typeof(JSpinner), new PropertyMetadata(-1, OnValueChanged, OnValueChangedCallBack));
+            DependencyProperty.Register("Value", typeof(int), typeof(JSpinner), new FrameworkPropertyMetadata(-1, FrameworkPropertyMetadataOptions.Journal, OnValueChanged, OnValueChangedCallBack));
 
         private static object OnValueChangedCallBack(DependencyObject d, object baseValue)
         {
@@ -286,7 +297,7 @@ namespace JayCustomControlLib
                 {
                     spinner.ValueChangedEvent?.Invoke(spinner, newValue);
                 }
-                if (newValue == -1)
+                if (newValue == -1 || spinner._TextList == null)
                 {
                     spinner.Text = string.Empty;
                 }
@@ -353,7 +364,7 @@ namespace JayCustomControlLib
         #endregion
 
         #region Private fields
-        private IList _TextList = null;
+        private List<string> _TextList = null;
         private bool _ClickFireEvent = false;
         private TextBox _TextBox = null;
         private const string TextBoxName = "PART_TextBox";
@@ -363,6 +374,7 @@ namespace JayCustomControlLib
         private void GetNewCollection()
         {
             Value = 0;
+            Text = _TextList.First();
         }
         #endregion
 
@@ -371,7 +383,6 @@ namespace JayCustomControlLib
         {
             base.OnApplyTemplate();
             _TextBox = GetTemplateChild(TextBoxName) as TextBox;
-            ItemsSource = new int[] { 1, 2, 3, 4, 5 };
         }
         #endregion
     }

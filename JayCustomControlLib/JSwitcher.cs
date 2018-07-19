@@ -1,6 +1,7 @@
 ﻿using JayCustomControlLib.CommonBasicClass;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,12 +67,28 @@ namespace JayCustomControlLib
         #region Command
         public static RoutedCommand ChangeContentCommand { get; private set; } = null;
         public static RoutedCommand DoubleClickCommand { get; private set; } = null;
+        public static RoutedCommand ClickCommand { get; private set; } = null;
         static void InitializeCommands()
         {
             ChangeContentCommand = new RoutedCommand("ChangeContentCommand", typeof(JSwitcher));
             DoubleClickCommand = new RoutedCommand("DoubleClickCommand", typeof(JSwitcher));
+            //ClickCommand = new RoutedCommand("ClickCommand", typeof(JSwitcher));
             MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), ChangeContentCommand, new ExecutedRoutedEventHandler(ChangeContentExecute), new KeyGesture(Key.Enter));
             MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), DoubleClickCommand, new ExecutedRoutedEventHandler(DoubleClickExecute), new MouseGesture(MouseAction.LeftDoubleClick));
+            //MyCommandHelper.RegisterCommandHandler(typeof(JSwitcher), ClickCommand, new ExecutedRoutedEventHandler(ClickExecute), new CanExecuteRoutedEventHandler(CanClickExecute), new MouseGesture(MouseAction.LeftClick));
+        }
+
+        private static void CanClickExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (sender is JSwitcher switcher)
+            {
+                e.CanExecute = !switcher.IsEditing;
+            }
+        }
+
+        private static void ClickExecute(object sender, ExecutedRoutedEventArgs e)
+        {
+            
         }
 
         private static void DoubleClickExecute(object sender, ExecutedRoutedEventArgs e)
@@ -105,6 +122,8 @@ namespace JayCustomControlLib
         #region Event
         public delegate void ContentChangedEventDelegate(object sender, string content);
         public event ContentChangedEventDelegate ContentChangedEvent;
+
+
         #endregion
 
         #region Propertys
@@ -246,6 +265,7 @@ namespace JayCustomControlLib
         }
         #endregion
 
+
         #endregion
 
         #region Static Propertys
@@ -258,6 +278,8 @@ namespace JayCustomControlLib
         #endregion
 
         #region Override methods
+
+        
         protected override void OnChecked(RoutedEventArgs e)
         {
             Background = ActiveBackgroundBrush;
@@ -271,6 +293,15 @@ namespace JayCustomControlLib
             Background = InactiveBackgroundBrush;
             Foreground = InactiveForegroundBrush;
             base.OnUnchecked(e);
+        }
+
+        protected override void OnToggle()
+        {
+            if (IsEditing)
+            {
+                return;
+            }
+            base.OnToggle();
         }
 
         public override void OnApplyTemplate()

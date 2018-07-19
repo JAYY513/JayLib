@@ -4,20 +4,80 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:MyCustomControl="clr-namespace:JayCustomControlLib;assembly=JayCustomControlLib"
+        xmlns:p="clr-namespace:JayCustomControlLib.Panels;assembly=JayCustomControlLib"
         xmlns:local="clr-namespace:ControlTest"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <BitmapImage x:Key="thumd" UriSource="thumb_new.png" />
+        <!--阴影-->
+        <DropShadowEffect x:Key="Effect_Normal" BlurRadius="2" Direction="-90" Opacity="0.6" ShadowDepth="3"></DropShadowEffect>
+        <DropShadowEffect x:Key="Effect_IsChecked" BlurRadius="2" Direction="-90" Opacity="0.6" ShadowDepth="2"></DropShadowEffect>
+        <DropShadowEffect x:Key="Cs_checkbox_effect" BlurRadius="2" Direction="-90" Opacity="0.4" ShadowDepth="2"></DropShadowEffect>
+        <DropShadowEffect x:Key="Effect_IsPressed" BlurRadius="2" Direction="-90" Opacity="0.6" ShadowDepth="1.5"></DropShadowEffect>
+        <!--The brush with the stereoscopic feeling-->
+        <LinearGradientBrush x:Key="Brush_Stereoscopic" EndPoint="0.5,1" StartPoint="0.5,0">
+            <LinearGradientBrush.GradientStops>
+                <GradientStop Color="#50ffffff" Offset="0"/>
+                <GradientStop Color="#50000000" Offset="1"/>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
     </Window.Resources>
     <MyCustomControl:DrawerHost  Background="White">
-        <UniformGrid>
-            <MyCustomControl:JSwitcher Width="60" Height="20" Content="aaa" MouseDoubleClick="JSwitcher_MouseDoubleClick" MouseLeftButtonDown="JSwitcher_MouseLeftButtonDown"></MyCustomControl:JSwitcher>
-            <MyCustomControl:JSlider IsUIFireEventDirectly="False" Foreground="White" ThumbImageHeight="30" ThumbImageWidth="22" IsExteriorEnable="True" ThumbImage="{StaticResource thumd}" Name="aaaa" Background="Black" Orientation="Vertical" Maximum="81" IsSnapToTickEnabled="True" TickPlacement="Both"></MyCustomControl:JSlider>
-            <MyCustomControl:JMeter Value="0" IsDockRight="False" BorderRimBrush="Yellow" ></MyCustomControl:JMeter>
-            <MyCustomControl:JSpinner IsUIFireEventDirectly="True" CanEdit="True" Name="ttt"></MyCustomControl:JSpinner>
+        <UniformGrid Rows="1">
+            <MyCustomControl:JSwitcher Name="s666" Width="60" Height="20" Content="aaa" MouseDoubleClick="JSwitcher_MouseDoubleClick" MouseLeftButtonDown="JSwitcher_MouseLeftButtonDown">
+                <MyCustomControl:JSwitcher.Style>
+                    <Style TargetType="MyCustomControl:JSwitcher">
+                        <Setter Property="Cursor" Value="Hand"></Setter>
+                        <Setter Property="ActiveBackgroundBrush" Value="Lime"/>
+                        <Setter Property="InactiveBackgroundBrush" Value="#FF808080"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontFamily" Value="Segoe UI, Lucida Sans Unicode, Verdana"/>
+                        <Setter Property="ActiveForegroundBrush" Value="White"></Setter>
+                        <Setter Property="InactiveForegroundBrush" Value="White"></Setter>
+                        <Setter Property="CanEdit" Value="True"></Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="MyCustomControl:JSwitcher">
+                                    <Grid Name="GD">
+                                        <Border x:Name="BD" CornerRadius="3" Effect="{DynamicResource Effect_Normal}" Background="{TemplateBinding Background}" ClipToBounds="True">
+                                            <Grid>
+                                                <ContentControl Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{TemplateBinding Content}"></ContentControl>
+                                                <TextBox Name="PART_TextBox" Foreground="{TemplateBinding Foreground}" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=MyCustomControl:JSwitcher},Path= InputText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Margin="1" Visibility="Collapsed" TextAlignment="Center"></TextBox>
+                                            </Grid>
+                                        </Border>
+                                        <Border Name="styleBorder" Background="{DynamicResource Brush_Stereoscopic}"  CornerRadius="{Binding ElementName=BD,Path=CornerRadius}" IsHitTestVisible="False"></Border>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsEditing" Value="true">
+                                            <Setter Property="Visibility" Value="Visible" TargetName="PART_TextBox"></Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="true">
+                                            <Setter Property="Margin" Value="1.2" TargetName="GD"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Effect" TargetName="BD" Value="{StaticResource Effect_IsChecked}"></Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Opacity" Value="0.50"/>
+                                            <Setter Property="Effect" TargetName="BD" Value="{x:Null}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="true">
+                                            <Setter Property="Foreground" Value="White"></Setter>
+                                            <Setter Property="Margin" Value="1.5" TargetName="GD"/>
+                                            <Setter Property="Effect" TargetName="BD" Value="{DynamicResource Effect_IsPressed}">
+                                            </Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </MyCustomControl:JSwitcher.Style>
+            </MyCustomControl:JSwitcher>
+            <MyCustomControl:JSlider Orientation="Vertical" IsUIFireEventDirectly="False" Foreground="Black" ThumbImageHeight="22" ThumbImageWidth="11" IsExteriorEnable="True" ThumbImage="{StaticResource thumd}" Name="aaaa" Background="Transparent" Maximum="81" IsSnapToTickEnabled="True" TickPlacement="Both" ></MyCustomControl:JSlider>
+            <MyCustomControl:ListDisplayer Name="bbbb"></MyCustomControl:ListDisplayer>
         </UniformGrid>
-
+        <!--<MyCustomControl:JTickMark Name="aaaa" Orientation="Vertical" IsResersed="True" VerticalAlignment="Center" Height="200" Background="Red" HorizontalAlignment="Center"></MyCustomControl:JTickMark>-->
     </MyCustomControl:DrawerHost>
 
 </Window>

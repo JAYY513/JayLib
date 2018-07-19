@@ -12,11 +12,11 @@ namespace JayLib.WPF.BasicClass
     /// Provides loosely-coupled messaging between various colleague objects.  All references to objects are stored weakly, to prevent memory leaks.
     /// 提供松散耦合的消息通知机制，为防止内存泄漏，所有对象都使用了弱引用（WeakReference）
     /// </summary>
-    public class MyMesseager
+    public class Messeager
     {
         #region Constructor
 
-        public MyMesseager()
+        public Messeager()
         {
         }
 

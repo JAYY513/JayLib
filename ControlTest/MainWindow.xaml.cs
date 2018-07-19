@@ -21,19 +21,47 @@ namespace ControlTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static string[] FaderTickStrings { get; private set; } = new string[]
+{
+            "OFF",  //0
+            "-70",//1
+            "","","","","","","","","","",
+            "-25",//12
+            "","","","","","","","",
+            "-18",//21
+            "","","","","","","","","",
+            "-13",//31
+            "","","","","","","","",
+            "-9",//40
+            "","","","","","","","","",
+            "-6",//50
+            "","","","","","","","","",
+            "0",//60
+            "","","","","","","","","","",
+            "+6",//71
+            "","","","","","","","",
+            "+10",//80
+};
+
         public MainWindow()
         {
             InitializeComponent();
             List<string> strings = new List<string>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 20; i++)
             {
                 strings.Add((i*10).ToString());
             }
             int a = 0;
             //aaa.AxisTexts = strings;
             //bbb.TextCollection = strings;
-            aaaa.TickTexts = strings;
-            ttt.CalculateValueFunction = Cal;
+            aaaa.TickTexts = FaderTickStrings;
+            //ttt.CalculateValueFunction = Cal;
+            s666.IsChecked = true;
+            bbbb.ItemsSource = strings;
+            //bbbb.Value = 6;
+            //bbbb.ItemsSource = new string[] { "1" };
+            //bbbb.ItemsSource = strings;
+            //bbbb.Value = 6;
         }
 
         public int Cal(string ss)

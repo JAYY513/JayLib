@@ -79,6 +79,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\JTickMark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\LedSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\ListDisplayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Shadow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -88,19 +100,25 @@
     <Compile Include="ActiveDisplayer.cs" />
     <Compile Include="ActiveDisplayItem.cs" />
     <Compile Include="AttachedPropertys\PanelItemsCollectionProperty.cs" />
+    <Compile Include="AttachedPropertys\PanelZIndexAssist.cs" />
     <Compile Include="AttachedPropertys\ShadowAssist.cs" />
     <Compile Include="Blank.cs" />
     <Compile Include="CommonBasicClass\MyCommandHelper.cs" />
     <Compile Include="Converter\DrawerOffsetConverter.cs" />
     <Compile Include="Converter\ShadowConverter.cs" />
+    <Compile Include="Converter\StringToVisibilityConverter.cs" />
     <Compile Include="DrawerHost.cs" />
     <Compile Include="JLimitGDSlider.cs" />
     <Compile Include="JMeter.cs" />
     <Compile Include="JSlider.cs" />
     <Compile Include="JSpinner.cs" />
     <Compile Include="JSwitcher.cs" />
+    <Compile Include="JTickMark.cs" />
+    <Compile Include="LedSlider.cs" />
     <Compile Include="ListDisplayer.cs" />
     <Compile Include="ListDisplayItem.cs" />
+    <Compile Include="Panels\ReversedUniformGrid.cs" />
+    <Compile Include="Panels\TickMarkPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

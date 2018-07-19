@@ -8,6 +8,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayCustomControlLib", "JayCustomControlLib\JayCustomControlLib.csproj", "{92AFCC90-E4BF-46EC-A9E8-813CE2C9013F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlTest", "ControlTest\ControlTest.csproj", "{117C48F0-9D70-4981-B694-A769EC6CE32D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92AFCC90-E4BF-46EC-A9E8-813CE2C9013F} = {92AFCC90-E4BF-46EC-A9E8-813CE2C9013F}
+		{43E479AB-A1CD-411C-9306-546F797FD702} = {43E479AB-A1CD-411C-9306-546F797FD702}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

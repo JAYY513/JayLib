@@ -5,14 +5,14 @@
     xmlns:local="clr-namespace:JayCustomControlLib">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JSpinner.xaml"></ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JLimitGDSlider.xaml"></ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JMeter.xaml"></ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JSlider.xaml"></ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JSwitcher.xaml"></ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/DrawerHost.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JSpinner.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JLimitGDSlider.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JMeter.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JSlider.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JSwitcher.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/DrawerHost.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/JTickMark.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/ListDisplayer.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JayCustomControlLib;component/Themes/LedSlider.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    
-    
-
 </ResourceDictionary>

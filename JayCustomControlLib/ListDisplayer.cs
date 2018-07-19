@@ -52,7 +52,25 @@ namespace JayCustomControlLib
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ListDisplayer), new FrameworkPropertyMetadata(typeof(ListDisplayer)));
             ItemsPanelTemplate itemsPanelTemplate = new ItemsPanelTemplate(new FrameworkElementFactory(typeof(VirtualizingStackPanel)));
             itemsPanelTemplate.Seal();
-            ItemsControl.ItemsPanelProperty.OverrideMetadata(typeof(ListDisplayer), (PropertyMetadata)new FrameworkPropertyMetadata((object)itemsPanelTemplate));
+            ItemsPanelProperty.OverrideMetadata(typeof(ListDisplayer), new FrameworkPropertyMetadata(itemsPanelTemplate));
+        }
+
+        /// <summary>
+        /// Return true if the item is (or is eligible to be) its own ItemContainer
+        /// </summary>
+        protected override bool IsItemItsOwnContainerOverride(object item)
+        {
+            return (item is ListDisplayItem);
+        }
+
+        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+        {
+            base.PrepareContainerForItemOverride(element, item);
+        }
+
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return new ListDisplayItem();
         }
     }
 }
